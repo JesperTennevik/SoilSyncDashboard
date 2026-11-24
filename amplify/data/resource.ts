@@ -36,8 +36,7 @@ const schema = a.schema({
     .model({
       device_id: a.string().required(),
       timestamp: a.string().required(),
-      temperature: a.float(),
-      humidity: a.float(),
+      moisture: a.float(),
       owner: a.string().required()
     })
     .identifier(['device_id', 'timestamp'])

@@ -28,8 +28,7 @@ export const handler: Handler = async (event) => {
     const { data: telemetry, errors: createErrors } = await client.models.Telemetry.create({
         device_id: event.device_id,
         timestamp: String(event.timestamp),
-        temperature: event.temperature,
-        humidity: event.humidity,
+        moisture: event.moisture,
         owner: device.owner,
     });
 
@@ -46,14 +45,14 @@ export const handler: Handler = async (event) => {
         has_url: Boolean(device.webhook_url),
     });
 
-    if (device.webhook_telemetry_enabled === true && device.webhook_url && typeof event.temperature === 'number') {
+    if (device.webhook_telemetry_enabled === true && device.webhook_url && typeof event.moisture === 'number') {
         console.log('Sending webhook to:', device.webhook_url);
         const msgBody = {
             // content: event.eventType,
             embeds: [
                 {
-                    title: 'Temperature: ' + event.temperature + '°C',
-                    description: `at <t:${Math.floor(event.timestamp / 1000)}:T>`,
+                    title: 'Moisture: ' + event.moisture + '°C',
+                    description: `at <t:${Math.floor(event.timestamp / 1000)}:T> från amp`,
                     color: 0x347bd8,
                 },
             ],

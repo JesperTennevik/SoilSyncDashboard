@@ -163,24 +163,14 @@ function App() {
     }),
     datasets: [
       {
-        label: 'Temperature',
+        label: 'Moisture',
         data: telemetries.map((data) => {
-          return data?.temperature;
+          return data?.moisture;
         }),
         tension: 0.4,
         borderColor: 'rgb(255, 99, 132)',
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
         yAxisID: 'y',
-      },
-      {
-        label: 'Humidity',
-        data: telemetries.map((data) => {
-          return data?.humidity;
-        }),
-        tension: 0.4,
-        borderColor: 'rgb(99, 255, 132)',
-        backgroundColor: 'rgba(99, 255, 132, 0.5)',
-        yAxisID: 'y1',
       }
     ],
   };
