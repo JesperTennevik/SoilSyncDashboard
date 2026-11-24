@@ -184,6 +184,7 @@ function App() {
       {
         <>
           <TextField
+            className="device-name-input"
             label="Device ID"
             descriptiveText="For a weather station, use the SMHI station number"
             value={newDeviceId}
