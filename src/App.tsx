@@ -61,7 +61,7 @@ function App() {
   const [selectedOption, setSelectedOption] = useState<string>("");
 
   const [newDeviceId, setNewDeviceId] = useState("");
-  const [newDeviceType, setNewDeviceType] = useState("esp32");
+  const [newDeviceType] = useState("esp32");
 
   const [devices, setDevices] = useState<Array<Schema["Devices"]["type"]>>([]);
   const [telemetries, setTelemetry] = useState<Array<Schema["Telemetry"]["type"]>>([]);
@@ -186,18 +186,9 @@ function App() {
           <TextField
             className="device-name-input"
             label="Device ID"
-            descriptiveText="For a weather station, use the SMHI station number"
             value={newDeviceId}
             onChange={(e) => setNewDeviceId(e.target.value)}
           />
-          <SelectField
-            label="Type"
-            value={newDeviceType}
-            onChange={(e) => setNewDeviceType(e.target.value)}
-          >
-            <option value="esp32">ESP32</option>
-            <option value="weatherStation">Weather Station</option>
-          </SelectField>
           <Button variation="primary" onClick={createDevice}>
             Add Device
           </Button>

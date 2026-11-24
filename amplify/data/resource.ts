@@ -2,7 +2,6 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 import { graphqlIoTCoreTelemetry } from '../functions/graphqlIoTCoreTelemetry/resource';
 import { graphqlIoTCoreStatus } from '../functions/graphqlIoTCoreStatus/resource';
-import { pollSmhi } from '../jobs/pollSmhi/resource';
 import { updateDeviceShadow } from '../functions/updateDeviceShadow/resource';
 import { storeDeviceShadow } from '../functions/storeDeviceShadow/resource';
 
@@ -59,7 +58,6 @@ const schema = a.schema({
 }).authorization((allow) => [
   allow.resource(graphqlIoTCoreTelemetry).to(['query', 'mutate']),
   allow.resource(graphqlIoTCoreStatus).to(['query', 'mutate']),
-  allow.resource(pollSmhi).to(['query', 'mutate']),
   allow.resource(updateDeviceShadow).to(['query', 'mutate']),
   allow.resource(storeDeviceShadow).to(['query', 'mutate'])
 ]);

@@ -4,7 +4,6 @@ import { data } from './data/resource';
 
 import { graphqlIoTCoreTelemetry } from './functions/graphqlIoTCoreTelemetry/resource';
 import { graphqlIoTCoreStatus } from './functions/graphqlIoTCoreStatus/resource';
-import { pollSmhi } from './jobs/pollSmhi/resource';
 import { updateDeviceShadow } from './functions/updateDeviceShadow/resource';
 import { storeDeviceShadow } from './functions/storeDeviceShadow/resource';
 
@@ -16,7 +15,6 @@ const backend = defineBackend({
   data,
   graphqlIoTCoreTelemetry,
   graphqlIoTCoreStatus,
-  pollSmhi,
   updateDeviceShadow,
   storeDeviceShadow,
 });
