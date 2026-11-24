@@ -47,13 +47,16 @@ export const handler: Handler = async (event) => {
       console.log('UpdateDevices errors:', errors);
       return { statusCode: 400, body: JSON.stringify({ errors, data }) };
     }
-    
+
+    const timestampMs = typeof event.timestamp === 'number'
+      ? event.timestamp
+      : Date.parse(event.timestamp);
     const msgBody = {
       //content: event.eventType,
       embeds: [
         {
-          title: 'Device ' + event.eventType,
-          description: `at <t:${Math.floor(event.timestamp / 1000)}:F>`,
+          title: `${device.device_id} ${event.eventType}`,
+          description: `**Time:** <t:${Math.floor(timestampMs / 1000)}:f>`,
           color: event.eventType == "connected" ? 45973 : 15158332,
         },
       ],

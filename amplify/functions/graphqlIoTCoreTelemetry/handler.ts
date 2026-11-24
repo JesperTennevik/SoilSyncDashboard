@@ -23,6 +23,7 @@ export const handler: Handler = async (event) => {
         console.log('GetDevice errors:', getErrors);
         return { statusCode: 400, body: JSON.stringify({ errors: getErrors, device }) };
     }
+    const deviceName = event.deviceName ?? device.device_id;
 
     // Create telemetry in GraphQL API / Telemetry table
     const { data: telemetry, errors: createErrors } = await client.models.Telemetry.create({
@@ -51,8 +52,8 @@ export const handler: Handler = async (event) => {
             // content: event.eventType,
             embeds: [
                 {
-                title: 'Moisture: ' + event.moisture + '%',
-                    description: `at <t:${Math.floor(event.timestamp / 1000)}:T> från amp`,
+                    title: 'Moisture: ' + event.moisture + '%',
+                    description: `**Device:** ${deviceName}\n**Time:** <t:${Math.floor(Date.parse(event.timestamp) / 1000)}:f>`,
                     color: 0x347bd8,
                 },
             ],
@@ -86,9 +87,9 @@ export const handler: Handler = async (event) => {
             body: JSON.stringify({
                 embeds: [
                     {
-                        title: 'Low soil moisture alert',
-                        description: `${event.device_id} reported ${event.moisture}% moisture, below the ${device.moisture_alert_threshold}% threshold.`,
-                        color: 0x1e90ff,
+                        title: `Moisture Alert: ${event.moisture}%`,
+                        description: `**Device:** ${deviceName}\n**Time:** <t:${Math.floor(Date.parse(event.timestamp) / 1000)}:f>`,
+                        color: 0x3587f2,
                     },
                 ],
             }),
