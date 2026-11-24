@@ -59,6 +59,8 @@ function App() {
   const { user, signOut } = useAuthenticator();
 
   const [selectedOption, setSelectedOption] = useState<string>("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const [newDeviceId, setNewDeviceId] = useState("");
   const [newDeviceType] = useState("esp32");
@@ -104,9 +106,16 @@ function App() {
     client.models.Devices.delete({ device_id })
   }
 
-  const chartTelemetries = selectedOption && selectedOption !== "all"
+  const deviceTelemetries = selectedOption && selectedOption !== "all"
     ? telemetries.filter((telemetry) => telemetry.device_id === selectedOption)
     : telemetries;
+  const chartTelemetries = deviceTelemetries.filter((telemetry) => {
+    const timestamp = moment(telemetry.timestamp);
+    if (!timestamp.isValid()) return false;
+    const telemetryDate = timestamp.format("YYYY-MM-DD");
+    return (!startDate || telemetryDate >= startDate) &&
+      (!endDate || telemetryDate <= endDate);
+  });
   const deviceIds = [...new Set(chartTelemetries.map((telemetry) => telemetry.device_id))].sort();
   const chartTimestamps = [...new Set(chartTelemetries.map((telemetry) => telemetry.timestamp))]
     .sort((a, b) => Date.parse(a) - Date.parse(b));
@@ -334,6 +343,23 @@ function App() {
           <option key={device.device_id} value={device.device_id}>{device.device_id}</option>
         ))}
       </SelectField>
+
+      <Flex>
+        <TextField
+          label="Start date"
+          type="date"
+          value={startDate}
+          max={endDate || undefined}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+        <TextField
+          label="End date"
+          type="date"
+          value={endDate}
+          min={startDate || undefined}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
+      </Flex>
 
       <View padding="xs"></View>
 
