@@ -110,8 +110,11 @@ function App() {
     client.models.Devices.delete({ device_id })
   }
 
-  const deviceIds = [...new Set(telemetries.map((telemetry) => telemetry.device_id))].sort();
-  const chartTimestamps = [...new Set(telemetries.map((telemetry) => telemetry.timestamp))]
+  const chartTelemetries = selectedOption && selectedOption !== "all"
+    ? telemetries.filter((telemetry) => telemetry.device_id === selectedOption)
+    : telemetries;
+  const deviceIds = [...new Set(chartTelemetries.map((telemetry) => telemetry.device_id))].sort();
+  const chartTimestamps = [...new Set(chartTelemetries.map((telemetry) => telemetry.timestamp))]
     .sort((a, b) => Date.parse(a) - Date.parse(b));
   const deviceColors = deviceIds.map((_, index) =>
     `hsl(${(200 + index * 137.508) % 360}, 72%, 42%)`
@@ -165,7 +168,7 @@ function App() {
     labels: chartTimestamps.map((timestamp) => moment(timestamp).format("YYYY-MM-DD HH:mm:ss")),
     datasets: deviceIds.map((deviceId, index) => {
       const deviceTelemetry = new Map(
-        telemetries
+        chartTelemetries
           .filter((telemetry) => telemetry.device_id === deviceId)
           .map((telemetry) => [telemetry.timestamp, telemetry.moisture ?? null] as const)
       );
