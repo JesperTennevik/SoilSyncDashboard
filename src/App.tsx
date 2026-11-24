@@ -159,7 +159,7 @@ function App() {
 
   const cartData = {
     labels: telemetries.map((data) => {
-      return moment(parseInt(data?.timestamp)).format("YYYY-MM-DD HH:mm:ss");
+      return moment(data.timestamp).format("YYYY-MM-DD HH:mm:ss");
     }),
     datasets: [
       {
@@ -208,6 +208,9 @@ function App() {
         {(item, index) => {
           const desired = readShadow(item.shadow_desired).measurementInterval;
           const reported = readShadow(item.shadow_reported).measurementInterval;
+          const latestTelemetry = telemetries
+            .filter((telemetry) => telemetry.device_id === item.device_id)
+            .sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp))[0];
           return (
             <Card
               key={index}
@@ -226,7 +229,7 @@ function App() {
                   </Badge>
                 </Flex>
                 <Flex>
-                  Last Seen: {telemetries.filter(t => t.device_id === item.device_id).sort((a, b) => parseInt(b.timestamp) - parseInt(a.timestamp))[0]?.timestamp ? moment(parseInt(String(telemetries.filter(t => t.device_id === item.device_id).sort((a, b) => parseInt(b.timestamp) - parseInt(a.timestamp))[0].timestamp))).fromNow() : "Never"}
+                  Last Seen: {latestTelemetry ? moment(latestTelemetry.timestamp).fromNow() : "Never"}
                 </Flex>
                 <br />
                 <Flex>ID: {item.device_id}</Flex>
