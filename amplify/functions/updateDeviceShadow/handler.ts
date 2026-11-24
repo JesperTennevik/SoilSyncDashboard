@@ -12,10 +12,10 @@ Amplify.configure(resourceConfig, libraryOptions);
 const client = generateClient<Schema>({ authMode: 'iam' });
 
 export const handler: Schema['UpdateDeviceShadow']['functionHandler'] = async (event) => {
-  const { device_id, sendInterval } = event.arguments;
+  const { device_id, measurementInterval } = event.arguments;
 
-  if (sendInterval < 60) {
-    throw new Error('sendInterval must be at least 60 seconds');
+  if (measurementInterval < 60) {
+    throw new Error('measurementInterval must be at least 60 seconds');
   }
 
   const userId = event.identity && 'sub' in event.identity ? event.identity.sub : undefined;
@@ -27,7 +27,7 @@ export const handler: Schema['UpdateDeviceShadow']['functionHandler'] = async (e
   }
 
   if (device.device_type !== 'esp32') {
-    throw new Error('sendInterval can only be set for an ESP32');
+    throw new Error('measurementInterval can only be set for an ESP32');
   }
 
   const endpoint = await new IoTClient({}).send(
@@ -40,7 +40,7 @@ export const handler: Schema['UpdateDeviceShadow']['functionHandler'] = async (e
   await iotData.send(new UpdateThingShadowCommand({
     thingName: device_id,
     payload: new TextEncoder().encode(JSON.stringify({
-      state: { desired: { sendInterval: sendInterval * 1000 } },
+      state: { desired: { measurementInterval: measurementInterval * 1000 } },
     })),
   }));
 
@@ -55,7 +55,7 @@ export const handler: Schema['UpdateDeviceShadow']['functionHandler'] = async (e
     device_id,
     shadow_desired: JSON.stringify({
       ...currentDesired,
-      sendInterval: sendInterval * 1000,
+      measurementInterval: measurementInterval * 1000,
     }),
   });
 
