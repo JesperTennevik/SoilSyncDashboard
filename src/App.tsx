@@ -44,10 +44,13 @@ ChartJS.register(
 
 const client = generateClient<Schema>();
 
-function readShadow(value: unknown): { sendInterval?: number } {
+console.log("MODELS:", Object.keys(client.models));
+console.log(client.models);
+
+function readShadow(value: unknown): { measurementInterval?: number } {
   try {
     const parsed = typeof value === "string" ? JSON.parse(value) : value;
-    return parsed && typeof parsed === "object" ? parsed as { sendInterval?: number } : {};
+    return parsed && typeof parsed === "object" ? parsed as { measurementInterval?: number } : {};
   } catch {
     return {};
   }
@@ -222,8 +225,8 @@ function App() {
         wrap="nowrap"
       >
         {(item, index) => {
-          const desired = readShadow(item.shadow_desired).sendInterval;
-          const reported = readShadow(item.shadow_reported).sendInterval;
+          const desired = readShadow(item.shadow_desired).measurementInterval;
+          const reported = readShadow(item.shadow_reported).measurementInterval;
           return (
             <Card
               key={index}
@@ -286,11 +289,11 @@ function App() {
                       key={`${item.device_id}-${desired ?? ""}-${reported ?? ""}`}
                       defaultValue={desired != null ? String(desired / 1000) : reported != null ? String(reported / 1000) : ""}
                       onBlur={(e) => {
-                        const sendInterval = Number(e.target.value);
-                        if (!Number.isInteger(sendInterval) || sendInterval < 60) return;
+                        const measurementInterval = Number(e.target.value);
+                        if (!Number.isInteger(measurementInterval) || measurementInterval < 60) return;
                         client.mutations.UpdateDeviceShadow({
                           device_id: item.device_id,
-                          sendInterval,
+                          measurementInterval,
                         });
                       }}
                     />

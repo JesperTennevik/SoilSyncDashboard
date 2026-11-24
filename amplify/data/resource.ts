@@ -51,7 +51,7 @@ const schema = a.schema({
     .mutation()
     .arguments({
       device_id: a.string().required(),
-      sendInterval: a.integer().required(),
+      measurementInterval: a.integer().required(),
     })
     .returns(a.string())
     .authorization((allow) => [allow.authenticated()])
