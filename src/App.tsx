@@ -68,19 +68,17 @@ function App() {
   const [_currentTime, setCurrentTime] = useState(Date.now());
 
   useEffect(() => {
-    const filter = selectedOption && selectedOption !== "all"
-      ? { filter: { device_id: { eq: selectedOption } } }
-      : {};
-
-    client.models.Telemetry.observeQuery(filter).subscribe({
+    const subscription = client.models.Telemetry.observeQuery().subscribe({
       next: (data) => { setTelemetry([...data.items]) },
     });
-  }, [selectedOption]); // Re-run when selectedOption changes
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
-    client.models.Devices.observeQuery().subscribe({
+    const subscription = client.models.Devices.observeQuery().subscribe({
       next: (data) => { setDevices([...data.items]) },
     });
+    return () => subscription.unsubscribe();
   }, []);
 
   // Update current time every 30 seconds to refresh "Last Seen" timestamps
