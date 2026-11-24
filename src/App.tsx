@@ -54,6 +54,13 @@ function readShadow(value: unknown): { measurementInterval?: number } {
   }
 }
 
+function formatDateInput(value: string): string {
+  const digits = value.replace(/\D/g, "").slice(0, 8);
+  if (digits.length <= 4) return digits;
+  if (digits.length <= 6) return `${digits.slice(0, 4)}-${digits.slice(4)}`;
+  return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6)}`;
+}
+
 function App() {
 
   const { user, signOut } = useAuthenticator();
@@ -113,8 +120,10 @@ function App() {
     const timestamp = moment(telemetry.timestamp);
     if (!timestamp.isValid()) return false;
     const telemetryDate = timestamp.format("YYYY-MM-DD");
-    return (!startDate || telemetryDate >= startDate) &&
-      (!endDate || telemetryDate <= endDate);
+    const hasValidStartDate = moment(startDate, "YYYY-MM-DD", true).isValid();
+    const hasValidEndDate = moment(endDate, "YYYY-MM-DD", true).isValid();
+    return (!hasValidStartDate || telemetryDate >= startDate) &&
+      (!hasValidEndDate || telemetryDate <= endDate);
   });
   const deviceIds = [...new Set(chartTelemetries.map((telemetry) => telemetry.device_id))].sort();
   const chartTimestamps = [...new Set(chartTelemetries.map((telemetry) => telemetry.timestamp))]
@@ -347,17 +356,21 @@ function App() {
       <Flex>
         <TextField
           label="Start date"
-          type="date"
+          type="text"
+          inputMode="numeric"
+          maxLength={10}
+          placeholder="YYYY-MM-DD"
           value={startDate}
-          max={endDate || undefined}
-          onChange={(e) => setStartDate(e.target.value)}
+          onChange={(e) => setStartDate(formatDateInput(e.target.value))}
         />
         <TextField
           label="End date"
-          type="date"
+          type="text"
+          inputMode="numeric"
+          maxLength={10}
+          placeholder="YYYY-MM-DD"
           value={endDate}
-          min={startDate || undefined}
-          onChange={(e) => setEndDate(e.target.value)}
+          onChange={(e) => setEndDate(formatDateInput(e.target.value))}
         />
       </Flex>
 
