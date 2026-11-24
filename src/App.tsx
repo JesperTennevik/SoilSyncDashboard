@@ -186,6 +186,7 @@ function App() {
           <TextField
             className="device-name-input"
             label="Device ID"
+            placeholder="Enter device ID"
             value={newDeviceId}
             onChange={(e) => setNewDeviceId(e.target.value)}
           />
