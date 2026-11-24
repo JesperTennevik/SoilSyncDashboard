@@ -110,14 +110,22 @@ function App() {
     client.models.Devices.delete({ device_id })
   }
 
+  const deviceIds = [...new Set(telemetries.map((telemetry) => telemetry.device_id))].sort();
+  const chartTimestamps = [...new Set(telemetries.map((telemetry) => telemetry.timestamp))]
+    .sort((a, b) => Date.parse(a) - Date.parse(b));
+  const deviceColors = deviceIds.map((_, index) =>
+    `hsl(${(200 + index * 137.508) % 360}, 72%, 42%)`
+  );
+
   const chartOptions = {
 
-    onClick: function (evt: any, element: string | any[]) {
+    onClick: function (evt: any, elements: Array<{ datasetIndex: number; index: number }>) {
       evt;
-      if (element.length > 0) {
-        var ind = element[0].index;
-        deleteTelemetry(telemetries[ind].device_id, telemetries[ind].timestamp.toString())
-      }
+      const element = elements[0];
+      if (!element) return;
+      const device_id = deviceIds[element.datasetIndex];
+      const timestamp = chartTimestamps[element.index];
+      if (device_id && timestamp) deleteTelemetry(device_id, timestamp);
     },
 
     responsive: true,
@@ -129,7 +137,9 @@ function App() {
     plugins: {
       title: {
         display: true,
-        text: telemetries[0]?.device_id ? telemetries[0].device_id : "",
+        text: selectedOption && selectedOption !== "all"
+          ? selectedOption
+          : "Soil moisture by device",
       },
     },
     scales: {
@@ -137,19 +147,13 @@ function App() {
         type: 'linear' as const,
         display: true,
         position: 'left' as const,
+        title: {
+          display: true,
+          text: 'Soil moisture (%)',
+        },
         ticks: {
           callback: function (value: any) {
-            return value + ' °C';
-          }
-        }
-      },
-      y1: {
-        type: 'linear' as const,
-        display: true,
-        position: 'right' as const,
-        ticks: {
-          callback: function (value: any) {
-            return value + ' %';
+            return value + '%';
           }
         }
       }
@@ -158,21 +162,24 @@ function App() {
 
 
   const cartData = {
-    labels: telemetries.map((data) => {
-      return moment(data.timestamp).format("YYYY-MM-DD HH:mm:ss");
-    }),
-    datasets: [
-      {
-        label: 'Moisture',
-        data: telemetries.map((data) => {
-          return data?.moisture;
-        }),
+    labels: chartTimestamps.map((timestamp) => moment(timestamp).format("YYYY-MM-DD HH:mm:ss")),
+    datasets: deviceIds.map((deviceId, index) => {
+      const deviceTelemetry = new Map(
+        telemetries
+          .filter((telemetry) => telemetry.device_id === deviceId)
+          .map((telemetry) => [telemetry.timestamp, telemetry.moisture ?? null] as const)
+      );
+      const color = deviceColors[index];
+      return {
+        label: deviceId,
+        data: chartTimestamps.map((timestamp) => deviceTelemetry.get(timestamp) ?? null),
         tension: 0.4,
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        spanGaps: true,
+        borderColor: color,
+        backgroundColor: color,
         yAxisID: 'y',
-      }
-    ],
+      };
+    }),
   };
 
 
