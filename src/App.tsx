@@ -90,10 +90,6 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  function deleteTelemetry(device_id: string, timestamp: string) {
-    client.models.Telemetry.delete({ device_id, timestamp })
-  }
-
   function createDevice() {
     if (!newDeviceId) return;
     client.models.Devices.create({
@@ -119,16 +115,6 @@ function App() {
   );
 
   const chartOptions = {
-
-    onClick: function (evt: any, elements: Array<{ datasetIndex: number; index: number }>) {
-      evt;
-      const element = elements[0];
-      if (!element) return;
-      const device_id = deviceIds[element.datasetIndex];
-      const timestamp = chartTimestamps[element.index];
-      if (device_id && timestamp) deleteTelemetry(device_id, timestamp);
-    },
-
     responsive: true,
     interaction: {
       mode: 'index' as const,
