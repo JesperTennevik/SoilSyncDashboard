@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./App.css";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 
@@ -43,9 +44,6 @@ ChartJS.register(
 );
 
 const client = generateClient<Schema>();
-
-console.log("MODELS:", Object.keys(client.models));
-console.log(client.models);
 
 function readShadow(value: unknown): { measurementInterval?: number } {
   try {
