@@ -282,7 +282,7 @@ function App() {
                 {item.device_type === "esp32" && (
                   <>
                     <TextField
-                      label="Send interval"
+                      label="Measurement interval"
                       type="number"
                       min={60}
                       descriptiveText="Minimum 60 seconds"
