@@ -271,6 +271,37 @@ function App() {
                     })
                   }
                 />
+                <SwitchField
+                  label="Low moisture alert enabled"
+                  isChecked={item.moisture_alert_enabled === true}
+                  onChange={(e) =>
+                    client.models.Devices.update({
+                      device_id: item.device_id,
+                      moisture_alert_enabled: e.target.checked,
+                    })
+                  }
+                />
+                {item.moisture_alert_enabled === true && (
+                  <TextField
+                    label="Low moisture alert threshold (%)"
+                    type="number"
+                    min={0}
+                    max={100}
+                    step={0.1}
+                    placeholder="Enter a value from 0 to 100"
+                    defaultValue={item.moisture_alert_threshold != null ? String(item.moisture_alert_threshold) : ""}
+                    onBlur={(e) => {
+                      const value = e.target.value.trim();
+                      if (!value) return;
+                      const threshold = Number(value);
+                      if (!Number.isFinite(threshold) || threshold < 0 || threshold > 100) return;
+                      client.models.Devices.update({
+                        device_id: item.device_id,
+                        moisture_alert_threshold: threshold,
+                      });
+                    }}
+                  />
+                )}
                 {item.device_type === "esp32" && (
                   <>
                     <TextField

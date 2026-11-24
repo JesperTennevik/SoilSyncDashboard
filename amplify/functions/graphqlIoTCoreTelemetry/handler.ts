@@ -51,7 +51,7 @@ export const handler: Handler = async (event) => {
             // content: event.eventType,
             embeds: [
                 {
-                    title: 'Moisture: ' + event.moisture + '°C',
+                title: 'Moisture: ' + event.moisture + '%',
                     description: `at <t:${Math.floor(event.timestamp / 1000)}:T> från amp`,
                     color: 0x347bd8,
                 },
@@ -70,6 +70,33 @@ export const handler: Handler = async (event) => {
         // If webhook response is not 204, return error
         if (response.status !== 204) {
             console.error('Discord webhook error:', response.status, await response.text());
+        }
+    }
+
+    if (
+        device.moisture_alert_enabled === true &&
+        device.webhook_url &&
+        typeof event.moisture === 'number' &&
+        typeof device.moisture_alert_threshold === 'number' &&
+        event.moisture < device.moisture_alert_threshold
+    ) {
+        const response = await fetch(device.webhook_url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                embeds: [
+                    {
+                        title: 'Low soil moisture alert',
+                        description: `${event.device_id} reported ${event.moisture}% moisture, below the ${device.moisture_alert_threshold}% threshold.`,
+                        color: 0x1e90ff,
+                    },
+                ],
+            }),
+        });
+
+        console.log('Low moisture alert webhook response:', response.status);
+        if (response.status !== 204) {
+            console.error('Low moisture alert webhook error:', response.status, await response.text());
         }
     }
 

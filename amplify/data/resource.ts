@@ -22,6 +22,8 @@ const schema = a.schema({
       webhook_url: a.string(),
       webhook_telemetry_enabled: a.boolean(),
       webhook_status_enabled: a.boolean(),
+      moisture_alert_enabled: a.boolean(),
+      moisture_alert_threshold: a.float(),
       shadow_desired: a.json(),
       shadow_reported: a.json(),
     })
