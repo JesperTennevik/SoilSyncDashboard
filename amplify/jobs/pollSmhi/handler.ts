@@ -38,7 +38,7 @@ export const handler: EventBridgeHandler<'Scheduled Event', null, void> = async 
         const { errors: createErrors } = await client.models.Telemetry.create({
             device_id: device.device_id,
             timestamp: String(new Date(reading.date).getTime()),
-            temperature: parseFloat(reading.value),
+            moisture: parseFloat(reading.value),
             owner: device.owner,
         });
 
