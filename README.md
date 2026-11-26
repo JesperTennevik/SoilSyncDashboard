@@ -23,7 +23,12 @@ Refer to the [SoilSync repository](https://github.com/JesperTennevik/SoilSync) f
 
 ## Policies
 ### MQTT
-To allow devices to connect to IoT Core but also limit the access they have in order to prevent malicious activities you can use this policy.
+This policy allows the devices access to:
+- Connect to IoT Core.
+- Their own device shadow. 
+- Every sub topic under their name. 
+
+The policy could be locked down even further. Limiting the devices to the `/telemetry` sub topic (in addition to connecting and their shadows of course) makes sense since there are no other topics in use anyway.
 ``` JSON
 {
   "Version": "2012-10-17",
@@ -31,30 +36,30 @@ To allow devices to connect to IoT Core but also limit the access they have in o
     {
       "Effect": "Allow",
       "Action": "iot:Connect",
-      "Resource": "arn:aws:iot:eu-north-1:721274598729:client/${iot:Connection.Thing.ThingName}"
+      "Resource": "<IoT-Core-End-Point>:client/${iot:Connection.Thing.ThingName}"
     },
     {
       "Effect": "Allow",
       "Action": "iot:Publish",
       "Resource": [
-        "arn:aws:iot:eu-north-1:721274598729:topic/${iot:Connection.Thing.ThingName}*",
-        "arn:aws:iot:eu-north-1:721274598729:topic/$aws/things/${iot:Connection.Thing.ThingName}/shadow/*"
+        "<IoT-Core-EndPoint>:topic/${iot:Connection.Thing.ThingName}*",
+        "<IoT-Core-EndPoint>:topic/$aws/things/${iot:Connection.Thing.ThingName}/shadow/*"
       ]
     },
     {
       "Effect": "Allow",
       "Action": "iot:Subscribe",
       "Resource": [
-        "arn:aws:iot:eu-north-1:721274598729:topicfilter/${iot:Connection.Thing.ThingName}*",
-        "arn:aws:iot:eu-north-1:721274598729:topicfilter/$aws/things/${iot:Connection.Thing.ThingName}/shadow/*"
+        "<IoT-Core-EndPoint>:topicfilter/${iot:Connection.Thing.ThingName}*",
+        "<IoT-Core-EndPoint>:topicfilter/$aws/things/${iot:Connection.Thing.ThingName}/shadow/*"
       ]
     },
     {
       "Effect": "Allow",
       "Action": "iot:Receive",
       "Resource": [
-        "arn:aws:iot:eu-north-1:721274598729:topic/${iot:Connection.Thing.ThingName}*",
-        "arn:aws:iot:eu-north-1:721274598729:topic/$aws/things/${iot:Connection.Thing.ThingName}/shadow/*"
+        "<IoT-Core-EndPoint>:topic/${iot:Connection.Thing.ThingName}*",
+        "<IoT-Core-EndPoint>:topic/$aws/things/${iot:Connection.Thing.ThingName}/shadow/*"
       ]
     }
   ]
