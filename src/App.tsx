@@ -353,8 +353,9 @@ function App() {
         ))}
       </SelectField>
 
-      <Flex>
+      <div className="date-filter-row">
         <TextField
+          className="date-filter-input"
           label="Start date"
           type="text"
           inputMode="numeric"
@@ -364,6 +365,7 @@ function App() {
           onChange={(e) => setStartDate(formatDateInput(e.target.value))}
         />
         <TextField
+          className="date-filter-input"
           label="End date"
           type="text"
           inputMode="numeric"
@@ -372,7 +374,7 @@ function App() {
           value={endDate}
           onChange={(e) => setEndDate(formatDateInput(e.target.value))}
         />
-      </Flex>
+      </div>
 
       <View padding="xs"></View>
 

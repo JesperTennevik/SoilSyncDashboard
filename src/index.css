@@ -67,3 +67,23 @@ a {
   background-color: white !important;
   color: black !important;
 }
+
+.date-filter-input input,
+.date-filter-input .amplify-input {
+  background-color: white !important;
+  color: black !important;
+}
+
+.date-filter-row {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.date-filter-row > * {
+  flex: 1;
+  min-width: 0;
+}
